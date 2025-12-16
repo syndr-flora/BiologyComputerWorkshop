@@ -532,11 +532,16 @@ Use the code block below to work:
 
 ```{r import_dat}
 # 1. Use read_csv() to import the 3 data files
-
-
+capture <- read.csv("Data/nifflers_capture.csv")
+capture <- read_csv("Data/nifflers_capture.csv")
+treasure <- read.csv("Data/nifflers_treasure.csv")
+recruitment <- read_csv("Data/nifflers_recruitment.csv")
 
 # 2. Use glimpse() to inspect each data frame
-
+str(capture)
+glimpse(capture)
+glimpse(treasure)
+glimpse(recruitment)
 ```
 
 Our raw data contains:
@@ -570,13 +575,33 @@ Use the code block below to complete each step.
 
 ```{r clean}
 # Clean capture data here
+unique(capture$site)
+capture <- capture %>%
+  mutate(site = case_when(
+    site == "gringotts" ~ "Gringotts",
+    site == "Gringotts Bank" ~ "Gringotts", 
+    TRUE ~ site),
+    sex = as.factor(sex))
 
+# Quick summary to find # of NAs
+summary(capture)
+
+# Look at the NAs
+capture %>% filter(is.na(age))
+capture %>% filter(is.na(weight_g))
 
 # Clean treasure data here
-
+unique(treasure$site)
+treasure <- treasure %>%
+  mutate(date = ymd(date), 
+         site = case_when(
+           site == "ForbiddenForest" ~ "Forbidden Forest", 
+           TRUE ~ site))
+glimpse(treasure)
 
 # Clean recruitment data here
-
+# This will source your rscript and run it
+source("Scripts/niffler_data_cleaning.R")
 
 ```
 
